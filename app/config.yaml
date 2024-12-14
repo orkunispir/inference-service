@@ -1,0 +1,12 @@
+mariadb_database:
+  user: backend
+  password: qmJDiqlAr9Fcu5Rav0XJ
+  host: mariadb.modeling
+  port: 3306
+  database: requests
+
+minio_database:
+  endpoint: minio-api.modeling:9000
+  access_key: minio
+  secret_key: DjcfggrfVXj5zaLJ
+  secure: false # change to true if https
