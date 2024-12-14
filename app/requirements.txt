@@ -5,5 +5,5 @@ python-multipart
 mariadb
 minio
 pyyaml
-torch
-torchvision
+# torch
+# torchvision
