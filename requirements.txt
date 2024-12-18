@@ -2,7 +2,7 @@ fastapi
 uvicorn
 pydantic
 python-multipart
-mariadb
+mysql-connector-python
 minio
 pyyaml
 # torch

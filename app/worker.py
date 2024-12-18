@@ -5,17 +5,24 @@ class Worker():
     def __init__(self, task_queue):
         self.mariadb_connection = mariadb_connect()
         self.minio_connection = minio_connect()
+        print("Connected to mariadb and minio inside worker")
         self.task_queue = task_queue
 
     def start(self) -> Thread:
         worker_thread = Thread(target=self._start)
         worker_thread.start()
+        print("Thread created")
         return worker_thread
 
     def _start(self):
 
         while True:
-            uuid, path_to_model = self.task_queue.get(True)  # waits until a result is there, with no timeout
+            task = self.task_queue.get(True)  # waits until a result is there, with no timeout
+            
+            uuid = task.uuid
+            path_to_model = task.path_to_model
+
+            print(f"Got task from queue with uuid:{uuid} and path_to_model:{path_to_model}", flush=True)
 
             mariadb_cursor = self.mariadb_connection.cursor()
 
@@ -23,6 +30,8 @@ class Worker():
                 # write to MariaDB -> state RUNNING
                 mariadb_cursor.execute("UPDATE requests SET status = 'RUNNING' WHERE uuid = %s", (uuid,))
                 self.mariadb_connection.commit()
+                
+                print(f"Set task in MariadDB with uuid:{uuid} to \"RUNNING\"", flush=True)
 
                 # load data from MinIO
                 try:
@@ -46,6 +55,8 @@ class Worker():
                 # write to MariaDB -> state DONE
                 mariadb_cursor.execute("UPDATE requests SET status = 'DONE' WHERE uuid = %s", (uuid,))
                 self.mariadb_connection.commit()
+                
+                print(f"Set task in MariadDB with uuid:{uuid} to \"DONE\"", flush=True)
 
                 # store weights in MinIO
                 try:
@@ -56,7 +67,7 @@ class Worker():
                     raise Exception(f"Error storing weights in MinIO: {e}")
             except Exception as e:
                 print(f"An error occurred: {e}")
-                mariadb_cursor.execute("UPDATE requests SET status = 'ERROR', message = %s WHERE uuid = %s", (str(e), uuid,))
+                mariadb_cursor.execute("UPDATE requests SET status = 'FAILED' WHERE uuid = %s", (uuid,))
                 self.mariadb_connection.commit()
             finally:
                 mariadb_cursor.close()

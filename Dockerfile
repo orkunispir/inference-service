@@ -1,17 +1,29 @@
-# Use an official NVIDIA CUDA image as the base
+# Base Image
+FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu20.04
 
 # Set working directory
 WORKDIR /app
 
-# Copy your application code
-COPY app/ /app/
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        wget \
+        ca-certificates
 
-# Install dependencies
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements file
+COPY requirements.txt .
 
-# Expose the port your FastAPI app runs on
-EXPOSE 80
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Command to run your application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"] 
+# Copy application code (assuming your application code is in a directory named 'src')
+COPY app .
+
+# Expose the port that FastAPI will run on
+EXPOSE 8000
+
+# Command to run the application using uvicorn
+# Assuming your main FastAPI app is in src/main.py and the app instance is named 'app'
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
