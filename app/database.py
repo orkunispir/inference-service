@@ -16,8 +16,13 @@ def create_requests_table():
         table_creation_query = """
             CREATE TABLE IF NOT EXISTS requests (
                 uuid VARCHAR(36) PRIMARY KEY,
-                status ENUM('WAITING', 'RUNNING', 'DONE', 'FAILED') NOT NULL,
-                path_to_model VARCHAR(255) NOT NULL
+                status VARCHAR(255),
+                bucket VARCHAR(255),
+                object_name VARCHAR(255),
+                model_bucket VARCHAR(255),  
+                model_object_name VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """
 
@@ -27,7 +32,7 @@ def create_requests_table():
         # Commit the changes
         conn.commit()
 
-        print("Table 'requests' created successfully or already exists.")
+        print("Table 'requests' created successfully or already exists.", flush=True)
 
     except mysql.connector.Error as e:
         print(f"Error creating table: {e}")

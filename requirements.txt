@@ -1,9 +1,9 @@
 fastapi
-uvicorn
-pydantic
-python-multipart
-mysql-connector-python
+joblib
 minio
-pyyaml
-# torch
-# torchvision
+mysql-connector-python
+numpy
+pandas
+pydantic
+scikit-learn
+tensorflow==2.17.0

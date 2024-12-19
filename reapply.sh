@@ -16,11 +16,13 @@ echo "Pushing Docker image: $IMAGE_NAME:$TAG"
 docker push "$IMAGE_NAME:$TAG"
 
 # 3. Delete the existing pod (if it exists)
-echo "Deleting pod: $POD_NAME in namespace: $NAMESPACE"
-kubectl delete pod "$POD_NAME" -n "$NAMESPACE" --grace-period=0 --force
+#echo "Deleting pod: $POD_NAME in namespace: $NAMESPACE"
+#kubectl delete pod "$POD_NAME" -n "$NAMESPACE" --grace-period=0 --force
 
 # 4. Apply the updated pod YAML
 echo "Applying pod YAML: $POD_YAML"
 kubectl apply -f "$POD_YAML" -n "$NAMESPACE"
+
+echo |kubectl get pods -n modeling
 
 echo "Deployment complete!"

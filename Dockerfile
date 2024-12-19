@@ -1,5 +1,5 @@
 # Base Image
-FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu20.04
+FROM nvidia/cuda:12.5.1-cudnn-devel-ubuntu20.04
 
 # Set working directory
 WORKDIR /app
@@ -17,6 +17,8 @@ COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
+
+RUN pip3 install uvicorn fastapi
 
 # Copy application code (assuming your application code is in a directory named 'src')
 COPY app .

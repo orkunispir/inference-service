@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+mysql-connector-python
+minio
+pyyaml
+# torch
+# torchvision
